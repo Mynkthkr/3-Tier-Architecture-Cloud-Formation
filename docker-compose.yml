@@ -1,0 +1,38 @@
+version: '3.3'
+services:
+  db:
+    image: mysql:5.7
+    hostname: dbhost
+    container_name: dbhost
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'bootexample'
+      MYSQL_USER: 'spring'
+      MYSQL_PASSWORD: 'spring@123'
+      MYSQL_ROOT_PASSWORD: 'root@123'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - my-db:/var/lib/mysql
+    networks:
+        - net1
+  springapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8090:8090'
+      - '8091:8091'
+    expose:
+      - '8090'
+      - '8091'
+    networks:
+      - net1
+
+networks:
+  net1:
+    driver: bridge
+volumes:
+  my-db:

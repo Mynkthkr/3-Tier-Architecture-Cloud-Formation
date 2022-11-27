@@ -1,0 +1,14 @@
+/home/ubuntu/spring-boot-rest-example/src/main/java/com/khoubyari/example/api/rest/docs/SwaggerConfig.java
+/home/ubuntu/spring-boot-rest-example/src/main/java/com/khoubyari/example/domain/Hotel.java
+/home/ubuntu/spring-boot-rest-example/src/main/java/com/khoubyari/example/domain/RestErrorInfo.java
+/home/ubuntu/spring-boot-rest-example/src/main/java/com/khoubyari/example/exception/ResourceNotFoundException.java
+/home/ubuntu/spring-boot-rest-example/src/main/java/com/khoubyari/example/service/HotelServiceHealth.java
+/home/ubuntu/spring-boot-rest-example/src/main/java/com/khoubyari/example/service/HotelServiceEvent.java
+/home/ubuntu/spring-boot-rest-example/src/main/java/com/khoubyari/example/api/rest/HotelController.java
+/home/ubuntu/spring-boot-rest-example/src/main/java/com/khoubyari/example/api/rest/AbstractRestHandler.java
+/home/ubuntu/spring-boot-rest-example/src/main/java/com/khoubyari/example/service/HotelService.java
+/home/ubuntu/spring-boot-rest-example/src/main/java/com/khoubyari/example/service/ServiceProperties.java
+/home/ubuntu/spring-boot-rest-example/src/main/java/com/khoubyari/example/exception/DataFormatException.java
+/home/ubuntu/spring-boot-rest-example/src/main/java/com/khoubyari/example/dao/jpa/HotelRepository.java
+/home/ubuntu/spring-boot-rest-example/src/main/java/com/khoubyari/example/RestControllerAspect.java
+/home/ubuntu/spring-boot-rest-example/src/main/java/com/khoubyari/example/Application.java

@@ -1,0 +1,14 @@
+com/khoubyari/example/api/rest/AbstractRestHandler.class
+com/khoubyari/example/api/rest/docs/SwaggerConfig.class
+com/khoubyari/example/api/rest/HotelController.class
+com/khoubyari/example/Application.class
+com/khoubyari/example/exception/ResourceNotFoundException.class
+com/khoubyari/example/service/HotelServiceHealth.class
+com/khoubyari/example/service/HotelServiceEvent.class
+com/khoubyari/example/service/HotelService.class
+com/khoubyari/example/domain/Hotel.class
+com/khoubyari/example/domain/RestErrorInfo.class
+com/khoubyari/example/dao/jpa/HotelRepository.class
+com/khoubyari/example/exception/DataFormatException.class
+com/khoubyari/example/RestControllerAspect.class
+com/khoubyari/example/service/ServiceProperties.class
