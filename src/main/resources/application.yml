@@ -62,7 +62,7 @@ spring:
 
   datasource:
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://${MYSQL_HOSTNAME:dbhost}:${MYSQL_PORT:3306}/bootexample?autoReconnect=true&useSSL=false
+    url: jdbc:mysql://${MYSQL_HOSTNAME:dbhost}/bootexample?autoReconnect=true&useSSL=false
     username: spring
     password: spring@123
 
