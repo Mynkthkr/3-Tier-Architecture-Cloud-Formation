@@ -3,7 +3,7 @@ services:
   db:
     image: mysql:5.7
     hostname: dbhost
-    container_name: dbhost
+    container_name: mysqll
     restart: always
     environment:
       MYSQL_DATABASE: 'bootexample'
@@ -22,6 +22,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      MYSQL_HOSTNAME: 'vpc-dbinstance-z5uq0zazho1d.caxct6djqhjo.us-east-1.rds.amazonaws.com'
+
     ports:
       - '8090:8090'
       - '8091:8091'
