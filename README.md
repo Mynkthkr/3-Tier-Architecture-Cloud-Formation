@@ -1,4 +1,5 @@
-#<u><b>Spring Boot application :- 3 tier architectue</b></u>
+# <u><b>Spring Boot application :- 3 tier architectue</b></u>
+------------------------------------------------------------------------------------------------------------------------
 
 ![image](https://user-images.githubusercontent.com/54767390/205398429-eb9b1c89-9a9b-419f-96a6-bb0e3499b66c.png)
 
