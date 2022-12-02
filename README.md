@@ -1,6 +1,6 @@
 #<u><b>Spring Boot application :- 3 tier architectue</b></u>
 
-![immage](https://user-images.githubusercontent.com/54767390/205397645-530a4e54-f4e0-4726-902b-e45a0fd1d511.png)
+![image](https://user-images.githubusercontent.com/54767390/205398429-eb9b1c89-9a9b-419f-96a6-bb0e3499b66c.png)
 
 
 ### Steps For deploying on AWS ECS
