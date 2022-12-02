@@ -1,4 +1,7 @@
-<u><b>Spring Boot application :- 3 tier architectue</b></u>
+#<u><b>Spring Boot application :- 3 tier architectue</b></u>
+
+![immage](https://user-images.githubusercontent.com/54767390/205397645-530a4e54-f4e0-4726-902b-e45a0fd1d511.png)
+
 
 ### Steps For deploying on AWS ECS
 
@@ -90,4 +93,43 @@ From this , got the Endpoint of RDS and store that in Export
 ### Now Run the final stack for deploying the ECS Infra using following CLI command 
 ```
 aws cloudformation create-stack --stack-name vpc --template-body file://ecs-CloudFormation.yml  --capabilities CAPABILITY_NAMED_IAM
+```
+___________________________________________________________________________________________________________________________________
+-----------------------------------------------------------------------------------------------------------------------------------
+## Build CI/CD Pipeline :
+Copy the code and paste it in pipeline
+```
+pipeline {
+    agent any
+     stages {
+        stage('Git checkout1') {
+          steps{
+                git branch: 'main', credentialsId: '', url: 'https://github.com/Mynkthkr/java-springboot.git'
+            }
+        }
+         stage('build image') {
+          steps{
+              sh'docker build -t 4xxxxxxxxxx5.dkr.ecr.us-east-1.amazonaws.com/spring:${BUILD_NUMBER} . '
+                }
+        }
+        stage('push image') {
+          steps{
+             sh'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 45xxxxxx5.dkr.ecr.us-east-1.amazonaws.com'
+             sh'docker push 45xxxxxx55.dkr.ecr.us-east-1.amazonaws.com/spring:${BUILD_NUMBER}'
+                }
+        }  
+        stage('validation') {
+          steps{
+               
+              sh'aws cloudformation validate-template --template-body file://ecs-CloudFormation.yml'              
+            }
+        }
+        stage('submit stack') {
+          steps{               
+              sh'aws cloudformation create-stack --stack-name ecs --template-body file://ecs-CloudFormation.yml --parameters ParameterKey=ContainerPort,ParameterValue=8090 ParameterKey=Image1,ParameterValue=${image}:${BUILD_NUMBER} --capabilities CAPABILITY_NAMED_IAM'
+            }
+        }                
+    }
+}
+
 ```
