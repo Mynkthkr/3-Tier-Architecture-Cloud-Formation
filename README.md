@@ -1,192 +1,93 @@
-# Spring Boot "Microservice" Example Project
+<u><b>Spring Boot application :- 3 tier architectue</b></u>
 
-This is a sample Java / Maven / Spring Boot (version 1.5.6) application that can be used as a starter for creating a microservice complete with built-in health check, metrics and much more. I hope it helps you.
+### Steps For deploying on AWS ECS
 
-## How to Run 
+Step1:
 
-This application is packaged as a war which has Tomcat 8 embedded. No Tomcat or JBoss installation is necessary. You run it using the ```java -jar``` command.
-
-* Clone this repository 
-* Make sure you are using JDK 1.8 and Maven 3.x
-* You can build the project and run the tests by running ```mvn clean package```
-* Once successfully built, you can run the service by one of these two methods:
+Make a docker image using following command 
 ```
-        java -jar -Dspring.profiles.active=test target/spring-boot-rest-example-0.5.0.war
-or
-        mvn spring-boot:run -Drun.arguments="spring.profiles.active=test"
-```
-* Check the stdout or boot_example.log file to make sure no exceptions are thrown
-
-Once the application runs you should see something like this
-
-```
-2017-08-29 17:31:23.091  INFO 19387 --- [           main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 8090 (http)
-2017-08-29 17:31:23.097  INFO 19387 --- [           main] com.khoubyari.example.Application        : Started Application in 22.285 seconds (JVM running for 23.032)
+docker build -t <image name> -f Dockerfile .
 ```
 
-## About the Service
+Step2:
 
-The service is just a simple hotel review REST service. It uses an in-memory database (H2) to store the data. You can also do with a relational database like MySQL or PostgreSQL. If your database connection properties work, you can call some REST endpoints defined in ```com.khoubyari.example.api.rest.hotelController``` on **port 8090**. (see below)
+Push image on AWS ECR
 
-More interestingly, you can start calling some of the operational endpoints (see full list below) like ```/metrics``` and ```/health``` (these are available on **port 8091**)
+Follow   ![image](https://user-images.githubusercontent.com/54767390/205375295-155c87a7-687e-4301-bb6d-f3547fc7cbcd.png) or 
 
-You can use this sample service to understand the conventions and configurations that allow you to create a DB-backed RESTful service. Once you understand and get comfortable with the sample app you can add your own services following the same patterns as the sample service.
- 
-Here is what this little application demonstrates: 
+Retrieve an authentication token and authenticate your Docker client to your registry.
 
-* Full integration with the latest **Spring** Framework: inversion of control, dependency injection, etc.
-* Packaging as a single war with embedded container (tomcat 8): No need to install a container separately on the host just run using the ``java -jar`` command
-* Demonstrates how to set up healthcheck, metrics, info, environment, etc. endpoints automatically on a configured port. Inject your own health / metrics info with a few lines of code.
-* Writing a RESTful service using annotation: supports both XML and JSON request / response; simply use desired ``Accept`` header in your request
-* Exception mapping from application exceptions to the right HTTP response with exception details in the body
-* *Spring Data* Integration with JPA/Hibernate with just a few lines of configuration and familiar annotations. 
-* Automatic CRUD functionality against the data source using Spring *Repository* pattern
-* Demonstrates MockMVC test framework with associated libraries
-* All APIs are "self-documented" by Swagger2 using annotations 
-
-Here are some endpoints you can call:
-
-### Get information about system health, configurations, etc.
-
+Use the AWS CLI:
 ```
-http://localhost:8091/env
-http://localhost:8091/health
-http://localhost:8091/info
-http://localhost:8091/metrics
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 4xxxxxxxxxx5.dkr.ecr.us-east-1.amazonaws.com
+```
+<b> Note: If you receive an error using the AWS CLI, make sure that you have the latest version of the AWS CLI and Docker installed. </b>
+
+Build your Docker image using the following command. You can skip this step if your image is already built:
+```
+docker build -t <name> . 
+```
+After the build completes, tag your image so you can push the image to this repository:
+```
+docker tag spring:latest 4xxxxxxxxx5.dkr.ecr.us-east-1.amazonaws.com/spring:latest
+```
+Run the following command to push this image to your newly created AWS repository:
+```
+docker push 4xxxxxxxx5.dkr.ecr.us-east-1.amazonaws.com/<name>:latest
 ```
 
-### Create a hotel resource
-
+-----------------------------------------------------------------------------------------------------------------------------------------------
+### Now run cloud formtion template for creating VPC
 ```
-POST /example/v1/hotels
-Accept: application/json
-Content-Type: application/json
-
-{
-"name" : "Beds R Us",
-"description" : "Very basic, small rooms but clean",
-"city" : "Santa Ana",
-"rating" : 2
-}
-
-RESPONSE: HTTP 201 (Created)
-Location header: http://localhost:8090/example/v1/hotels/1
+aws cloudformation create-stack --stack-name vpc --template-body file://vpc-CloudFormation.yml  --capabilities CAPABILITY_NAMED_IAM
 ```
-
-### Retrieve a paginated list of hotels
-
+By this stack, get some Export value
+So, use that values to any resource from this VPC
 ```
-http://localhost:8090/example/v1/hotels?page=0&size=10
+Outputs:
+  VPCid:
+    Description: The VPCid
+    Value: !Ref VPC
+    Export:
+      Name: VPC
 
-Response: HTTP 200
-Content: paginated list 
+  PublicSub1:
+    Description: public subnet 1
+    Value: !Ref PublicSubnet1
+    Export:
+      Name: PublicSubnet1
+
+  PublicSub2:
+    Description: public subnet  2
+    Value: !Ref PublicSubnet2
+    Export:
+      Name: PublicSubnet2
+
+  PrivateSub1:
+    Description: private subnet 1
+    Value: !Ref PrivateSubnet1
+    Export:
+      Name: PrivateSubnet1
+
+  PrivateSub2:
+    Description: private subnet 2
+    Value: !Ref PrivateSubnet2
+    Export:
+      Name: PrivateSubnet2
 ```
-
-### Update a hotel resource
-
+### Run another cloud formation for RDS 
 ```
-PUT /example/v1/hotels/1
-Accept: application/json
-Content-Type: application/json
-
-{
-"name" : "Beds R Us",
-"description" : "Very basic, small rooms but clean",
-"city" : "Santa Ana",
-"rating" : 3
-}
-
-RESPONSE: HTTP 204 (No Content)
+aws cloudformation create-stack --stack-name vpc --template-body file://vpc-CloudFormation.yml  --capabilities CAPABILITY_NAMED_IAM
 ```
-### To view Swagger 2 API docs
-
-Run the server and browse to localhost:8090/swagger-ui.html
-
-# About Spring Boot
-
-Spring Boot is an "opinionated" application bootstrapping framework that makes it easy to create new RESTful services (among other types of applications). It provides many of the usual Spring facilities that can be configured easily usually without any XML. In addition to easy set up of Spring Controllers, Spring Data, etc. Spring Boot comes with the Actuator module that gives the application the following endpoints helpful in monitoring and operating the service:
-
-**/metrics** Shows “metrics” information for the current application.
-
-**/health** Shows application health information.
-
-**/info** Displays arbitrary application info.
-
-**/configprops** Displays a collated list of all @ConfigurationProperties.
-
-**/mappings** Displays a collated list of all @RequestMapping paths.
-
-**/beans** Displays a complete list of all the Spring Beans in your application.
-
-**/env** Exposes properties from Spring’s ConfigurableEnvironment.
-
-**/trace** Displays trace information (by default the last few HTTP requests).
-
-### To view your H2 in-memory datbase
-
-The 'test' profile runs on H2 in-memory database. To view and query the database you can browse to http://localhost:8090/h2-console. Default username is 'sa' with a blank password. Make sure you disable this in your production profiles. For more, see https://goo.gl/U8m62X
-
-# Running the project with MySQL
-
-This project uses an in-memory database so that you don't have to install a database in order to run it. However, converting it to run with another relational database such as MySQL or PostgreSQL is very easy. Since the project uses Spring Data and the Repository pattern, it's even fairly easy to back the same service with MongoDB. 
-
-Here is what you would do to back the services with MySQL, for example: 
-
-### In pom.xml add: 
-
+From this , got the Endpoint of RDS and store that in Export
 ```
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
+  DBEndpoint:
+    Description: The connection endpoint for the database.
+    Value: !GetAtt  DBinstance.Endpoint.Address
+    Export:
+      Name: DBEndPoint 
 ```
-
-### Append this to the end of application.yml: 
-
+### Now Run the final stack for deploying the ECS Infra using following CLI command 
 ```
----
-spring:
-  profiles: mysql
-
-  datasource:
-    driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://<your_mysql_host_or_ip>/bootexample
-    username: <your_mysql_username>
-    password: <your_mysql_password>
-
-  jpa:
-    hibernate:
-      dialect: org.hibernate.dialect.MySQLInnoDBDialect
-      ddl-auto: update # todo: in non-dev environments, comment this out:
-
-
-hotel.service:
-  name: 'test profile:'
+aws cloudformation create-stack --stack-name vpc --template-body file://ecs-CloudFormation.yml  --capabilities CAPABILITY_NAMED_IAM
 ```
-
-### Then run is using the 'mysql' profile:
-
-```
-        java -jar -Dspring.profiles.active=mysql target/spring-boot-rest-example-0.5.0.war
-or
-        mvn spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=mysql"
-```
-
-# Attaching to the app remotely from your IDE
-
-Run the service with these command line options:
-
-```
-mvn spring-boot:run -Drun.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"
-or
-java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -Dspring.profiles.active=test -Ddebug -jar target/spring-boot-rest-example-0.5.0.war
-```
-and then you can connect to it remotely using your IDE. For example, from IntelliJ You have to add remote debug configuration: Edit configuration -> Remote.
-
-# Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=khoubyari/spring-boot-rest-example&type=Date)](https://star-history.com/#khoubyari/spring-boot-rest-example&Date)
-
-# Questions and Comments: khoubyari@gmail.com
-
-
