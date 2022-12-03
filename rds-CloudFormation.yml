@@ -1,0 +1,70 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: An example CloudFormation template for Fargate.
+Parameters:
+
+  Mydb:
+    Description: a
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: dbname
+
+Resources:
+
+  myDBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties: 
+      DBSubnetGroupDescription: Private subnet for RDS
+    
+      SubnetIds: 
+        - !Ref PrivateSubnet1  ###############################################################
+        - !Ref PrivateSubnet2
+      Tags: 
+        - Key: Name
+          Value: DB subnet
+
+  DBinstance: 
+    Type: AWS::RDS::DBInstance
+    Properties: 
+      DBSubnetGroupName: !Ref myDBSubnetGroup
+      AllocatedStorage: 5
+      DBInstanceClass: db.t3.small
+      Engine: MySQL
+      MasterUsername: mynk
+      MasterUserPassword: mynk12345
+      DBName: !Ref Mydb
+    DeletionPolicy: Snapshot
+
+  DbSecurityByEC2SecurityGroup: 
+    Type: AWS::RDS::DBSecurityGroup
+    Properties: 
+      
+      GroupDescription: "Ingress for Amazon EC2 security group"
+      DBSecurityGroupIngress: 
+          CIDRIP: 0.0.0.0/0
+
+
+
+  # SSMRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     RoleName: SSMrole
+  #     AssumeRolePolicyDocument:
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service: ecs-tasks.amazonaws.com
+  #           Action: 'sts:AssumeRole'
+  #     ManagedPolicyArns:
+  #       - 'arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess'
+  
+  # BasicParameter:
+  #   Type: AWS::SSM::Parameter
+  #   Properties:
+  #     Name: MYSQL_HOSTNAME
+  #     Type: String
+  #     Value: !GetAtt GetDBinstance.Endpoint.Address
+  #     Tier: Advanced
+  #    # Policies: '[{"Type":"Expiration","Version":"1.0","Attributes":{"Timestamp":"2020-05-13T00:00:00.000Z"}},{"Type":"ExpirationNotification","Version":"1.0","Attributes":{"Before":"5","Unit":"Days"}},{"Type":"NoChangeNotification","Version":"1.0","Attributes":{"After":"60","Unit":"Days"}}]'
+  #     Description: SSM Parameter for running date command.
+  #     #AllowedPattern: "^[a-zA-Z]{1,10}$"
+  #     Tags:
+  #       Environment: DEV
