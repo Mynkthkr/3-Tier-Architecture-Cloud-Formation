@@ -15,6 +15,10 @@ docker build -t <image name> -f Dockerfile .
 
 Step2:
 
+Create AWS ECR Repositories
+
+Search <b>Amazon ECR</b> > Create repositories 
+
 Push image on AWS ECR
 
 Follow   ![image](https://user-images.githubusercontent.com/54767390/205375295-155c87a7-687e-4301-bb6d-f3547fc7cbcd.png) or 
