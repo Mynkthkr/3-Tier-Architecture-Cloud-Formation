@@ -97,7 +97,7 @@ From this , got the Endpoint of RDS and store that in Export
 ```
 ### Now Run the final stack for deploying the ECS Infra using following CLI command 
 ```
-aws cloudformation create-stack --stack-name ecs --template-body file://ecs-CloudFormation.yml  
+aws cloudformation create-stack --stack-name ecs --template-body file://ecs-CloudFormation.yml --parameters ParameterKey=Image1,ParameterValue=<image>
 ```
 ___________________________________________________________________________________________________________________________________
 -----------------------------------------------------------------------------------------------------------------------------------
