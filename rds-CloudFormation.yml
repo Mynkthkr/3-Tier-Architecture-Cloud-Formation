@@ -1,0 +1,133 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: An example CloudFormation template for Fargate.
+Parameters:
+
+  DBName:
+    Description: RDS database name
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: dbname
+
+  DBUsername:
+    Description: RDS database user name
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: dbusername
+
+  DBPassword:
+    Description: RDS database Password
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: dbpassword
+
+
+
+
+
+Resources:
+
+  DBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Access to the RDS instance
+      VpcId:
+        Fn::ImportValue: VPC
+
+  ECSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Access to the ECS containers
+      VpcId:
+        Fn::ImportValue: VPC
+
+  DBSecurityGroupIngressFromECS:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: Ingress from the ECS containers to the RDS instance
+      GroupId: !Ref 'DBSecurityGroup'
+      IpProtocol: -1 
+      SourceSecurityGroupId: !Ref 'ECSSecurityGroup'
+
+
+  myDBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties: 
+      DBSubnetGroupDescription: Private subnet for RDS
+    
+      SubnetIds: 
+        - Fn::ImportValue: PrivateSubnet1  #private                      ################################################
+        - Fn::ImportValue: PrivateSubnet2
+      Tags: 
+        - Key: Name
+          Value: DB subnet
+
+  DBinstance: 
+    Type: AWS::RDS::DBInstance
+    Properties: 
+      DBSubnetGroupName: !Ref myDBSubnetGroup
+      AllocatedStorage: 5
+      DBInstanceClass: db.t3.small
+      Engine: MySQL
+      MasterUsername: !Ref DBUsername
+      MasterUserPassword: !Ref DBPassword
+      DBName: !Ref DBName
+    DeletionPolicy: Snapshot
+
+  DbSecurityByEC2SecurityGroup: 
+    Type: AWS::RDS::DBSecurityGroup
+    Properties: 
+      
+      GroupDescription: "Ingress for Amazon EC2 security group"
+      DBSecurityGroupIngress: 
+          CIDRIP: 0.0.0.0/0
+
+
+
+  # SSMRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     RoleName: SSMrole
+  #     AssumeRolePolicyDocument:
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service: ecs-tasks.amazonaws.com
+  #           Action: 'sts:AssumeRole'
+  #     ManagedPolicyArns:
+  #       - 'arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess'
+  
+  # BasicParameter:
+  #   Type: AWS::SSM::Parameter
+  #   Properties:
+  #     Name: MYSQL_HOSTNAME
+  #     Type: String
+  #     Value: !GetAtt GetDBinstance.Endpoint.Address
+  #     Tier: Advanced
+  #    # Policies: '[{"Type":"Expiration","Version":"1.0","Attributes":{"Timestamp":"2020-05-13T00:00:00.000Z"}},{"Type":"ExpirationNotification","Version":"1.0","Attributes":{"Before":"5","Unit":"Days"}},{"Type":"NoChangeNotification","Version":"1.0","Attributes":{"After":"60","Unit":"Days"}}]'
+  #     Description: SSM Parameter for running date command.
+  #     #AllowedPattern: "^[a-zA-Z]{1,10}$"
+  #     Tags:
+  #       Environment: DEV
+
+
+Outputs:
+  DBName:
+    Description: Database-password
+    Value: !Ref DBName
+    Export:
+      Name: dbname
+
+  DBUsername:
+    Description: Database-password
+    Value: !Ref DBUsername
+    Export:
+      Name: dbusername
+
+  DBPassword:
+    Description: Database-password
+    Value: !Ref DBPassword
+    Export:
+      Name: dbpassword
+
+  DBEndpoint:
+    Description: The connection endpoint for the database.
+    Value: !GetAtt  DBinstance.Endpoint.Address
+    Export:
+      Name: DBEndPoint 
