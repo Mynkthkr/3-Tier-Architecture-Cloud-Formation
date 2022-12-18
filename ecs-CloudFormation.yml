@@ -12,21 +12,8 @@ Parameters:
     Type: String
     Default: myspringcluster
   
-  # VPC:
-  #   Type: String
-  #   Default: vpc-00829ddef71341e15
-  # PrivateSubnetOne: 
-  #   Type: String
-  #   Default: subnet-01d0a7f5470b9607e
-  # PrivateSubnetTwo: 
-  #   Type: String
-  #   Default: subnet-0d4e0ea88833233bc
-  # PublicSubnetOne: 
-  #   Type: String
-  #   Default: subnet-0d4947dd82769239c
-  # PublicSubnetTwo: 
-  #   Type: String
-  #   Default: subnet-0714bdb2d7dae3460
+
+
 
   DesiredCapacity:
     Type: Number
@@ -97,21 +84,7 @@ Resources:
     Properties:
       ClusterName: !Ref ClusterName
 
-  # A security group for the EC2 hosts that will run the containers
-  # ContainerSecurityGroup:
-  #   Type: AWS::EC2::SecurityGroup
-  #   Properties:
-  #     GroupDescription: Access to the ECS hosts that run containers
-  #     VpcId:
-  #       Fn::ImportValue: VPC
 
-  # ECSSecurityGroupIngressFromPublicALB:
-  #   Type: AWS::EC2::SecurityGroupIngress
-  #   Properties:
-  #     Description: Ingress from the public ALB
-  #     GroupId: !Ref 'ContainerSecurityGroup'
-  #     IpProtocol: -1
-  #     SourceSecurityGroupId: !Ref 'PublicLoadBalancerSecurityGroup'
 
 
 
@@ -132,7 +105,7 @@ Resources:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       VPCZoneIdentifier:
-        - Fn::ImportValue: PrivateSubnet1  #private                      ################################################
+        - Fn::ImportValue: PrivateSubnet1  #private                 
         - Fn::ImportValue: PrivateSubnet2
       LaunchConfigurationName: !Ref ContainerInstances
       MinSize: 1
@@ -187,9 +160,7 @@ Resources:
               - 'ecs:UpdateService'
             Resource: '*'
 
-  # Role for the EC2 hosts. This allows the ECS agent on the EC2 hosts
-  # to communciate with the ECS control plane, as well as download the docker
-  # images from ECR to run on your host.
+
   EC2Role:
     Type: AWS::IAM::Role
     Properties:
@@ -220,10 +191,7 @@ Resources:
               - 'ecr:GetDownloadUrlForLayer'
             Resource: '*'
 
-  # This is an IAM role which authorizes ECS to manage resources on your
-  # account on your behalf, such as updating your load balancer with the
-  # details of where your containers are, so that traffic can reach your
-  # containers.
+
   ECSRole:
     Type: AWS::IAM::Role
     Properties:
@@ -240,8 +208,7 @@ Resources:
           Statement:
           - Effect: Allow
             Action:
-              # Rules which allow ECS to attach network interfaces to instances
-              # on your behalf in order for awsvpc networking mode to work right
+       
               - 'ec2:AttachNetworkInterface'
               - 'ec2:CreateNetworkInterface'
               - 'ec2:CreateNetworkInterfacePermission'
@@ -250,8 +217,7 @@ Resources:
               - 'ec2:Describe*'
               - 'ec2:DetachNetworkInterface'
 
-              # Rules which allow ECS to update load balancers on your behalf
-              # with the information sabout how to send traffic to your containers
+             
               - 'elasticloadbalancing:DeregisterInstancesFromLoadBalancer'
               - 'elasticloadbalancing:DeregisterTargets'
               - 'elasticloadbalancing:Describe*'
@@ -419,8 +385,4 @@ Outputs:
       Name: !Join [ ':', [ !Ref 'AWS::StackName', 'AutoscalingRole' ] ]
 
 
-  # ContainerSecurityGroup:
-  #   Description: A security group used to allow containers to receive traffic
-  #   Value: !Ref 'ContainerSecurityGroup'
-  #   Export:
-  #     Name: !Ref ContainerSecurityGroup
+  
