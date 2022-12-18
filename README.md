@@ -6,6 +6,8 @@
 
 ### Steps For deploying on AWS ECS
 
+Use Region <b>us-east-1</b> or you can change accordingly
+
 Step1:
 
 Make a docker image using following command 
@@ -47,7 +49,7 @@ docker push 4xxxxxxxx5.dkr.ecr.us-east-1.amazonaws.com/<name>:latest
 -----------------------------------------------------------------------------------------------------------------------------------------------
 ### Now run cloud formtion template for creating VPC
 ```
-aws cloudformation create-stack --stack-name vpc --template-body file://vpc-CloudFormation.yml  
+aws cloudformation create-stack --stack-name vpc --template-body file://vpc-CloudFormation.yml --region=us-east-1
 ```
 By this stack, get some Export value
 So, use that values to any resource from this VPC
@@ -85,7 +87,7 @@ Outputs:
 ```
 ### Run another cloud formation for RDS 
 ```
-aws cloudformation create-stack --stack-name rds --template-body file://rds-CloudFormation.yml  
+aws cloudformation create-stack --stack-name rds --template-body file://rds-CloudFormation.yml  --region=us-east-1
 ```
 From this , got the Endpoint of RDS and store that in Export
 ```
@@ -97,7 +99,7 @@ From this , got the Endpoint of RDS and store that in Export
 ```
 ### Now Run the final stack for deploying the ECS Infra using following CLI command 
 ```
-aws cloudformation create-stack --stack-name ecs --template-body file://ecs-CloudFormation.yml --parameters ParameterKey=Image1,ParameterValue=<image> --capabilities CAPABILITY_NAMED_IAM
+aws cloudformation create-stack --stack-name ecs --template-body file://ecs-CloudFormation.yml --parameters ParameterKey=Image1,ParameterValue=<image> --capabilities CAPABILITY_NAMED_IAM --region=us-east-1
 ```
 ___________________________________________________________________________________________________________________________________
 -----------------------------------------------------------------------------------------------------------------------------------
