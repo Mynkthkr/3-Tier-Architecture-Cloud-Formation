@@ -107,6 +107,12 @@ aws cloudformation create-stack --stack-name ecs --template-body file://ecs-Clou
 
 ### Add  ``` /swagger-ui.html ``` 
 
+```     <DNS>/swagger-ui.html  ``` , and Final result
+
+![image](https://user-images.githubusercontent.com/54767390/208317833-808b591f-1c2c-4adf-b57e-729a6af953ba.png)
+
+
+
 
 ___________________________________________________________________________________________________________________________________
 -----------------------------------------------------------------------------------------------------------------------------------
