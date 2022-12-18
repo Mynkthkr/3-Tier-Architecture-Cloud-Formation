@@ -101,6 +101,13 @@ From this , got the Endpoint of RDS and store that in Export
 ```
 aws cloudformation create-stack --stack-name ecs --template-body file://ecs-CloudFormation.yml --parameters ParameterKey=Image1,ParameterValue=<image> --capabilities CAPABILITY_NAMED_IAM --region=us-east-1
 ```
+### Hit the DNS , result will show like this
+
+![image](https://user-images.githubusercontent.com/54767390/208317697-1b7a81c5-de64-4a49-97d4-98839d87421a.png)
+
+### Add  ``` /swagger-ui.html ``` 
+
+
 ___________________________________________________________________________________________________________________________________
 -----------------------------------------------------------------------------------------------------------------------------------
 ## Build CI/CD Pipeline :
