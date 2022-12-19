@@ -87,7 +87,7 @@ Outputs:
 ```
 ### Run another cloud formation for RDS 
 ```
-aws cloudformation create-stack --stack-name rds --template-body file://rds-CloudFormation.yml  --region=us-east-1
+aws cloudformation create-stack --stack-name rds --template-body file://rds-CloudFormation.yml  --region=us-east-1 --capabilities CAPABILITY_NAMED_IAM
 ```
 From this , got the Endpoint of RDS and store that in Export
 ```
