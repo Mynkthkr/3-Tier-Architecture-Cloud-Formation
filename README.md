@@ -98,14 +98,17 @@ From this , got the Endpoint of RDS and store that in Export
       Name: DBEndPoint 
 ```
 ### Now Run the final stack for deploying the ECS Infra using following CLI command 
-```
-## Note
-------------------------------------------------------------------------------
+
+## NOTE
+-----------------------------------------------
 Please change the ``` arn ``` for database name ,database username and database password with your aws account number in ecs-cloudformation template [Ecs-Template].(https://github.com/Mynkthkr/java-springboot/blob/main/ecs-CloudFormation.yml)
 
+```
 aws cloudformation create-stack --stack-name ecs --template-body file://ecs-CloudFormation.yml --parameters ParameterKey=ImageUrl,ParameterValue=<image> --capabilities CAPABILITY_NAMED_IAM --region=us-east-1
 ```
 ### Hit the DNS , result will show like this
+
+
 
 ![image](https://user-images.githubusercontent.com/54767390/208317697-1b7a81c5-de64-4a49-97d4-98839d87421a.png)
 
