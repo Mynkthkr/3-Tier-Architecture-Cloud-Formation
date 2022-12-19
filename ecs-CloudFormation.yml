@@ -32,6 +32,7 @@ Parameters:
   ServiceName:
     Type: String
     Description: A human-readable name for the service.
+    Default: Myservice
   HealthCheckPath:
     Type: String
     Default: /swagger-ui.html
