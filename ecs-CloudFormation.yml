@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: EC2 ECS cluster running containers in a public subnet. Only supports
-             public facing load balancer, and public service discovery namespaces.
+             public facing load balance
 Parameters:
   InstanceType:
     Description: EC2 instance type
@@ -13,12 +13,10 @@ Parameters:
     Default: myspringcluster
   
 
-
-
   DesiredCapacity:
     Type: Number
     Default: 1
-    Description: Number of EC2 instances to launch 
+    Description: Number of EC2 instances to launch in your ECS cluster.
   MaxSize:
     Type: Number
     Default: 2
@@ -27,7 +25,7 @@ Parameters:
     Description: AMI ID
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Default: /aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id
-    Description: The Amazon Machine Image ID used for the cluster,
+    Description: The Amazon Machine Image ID used for the cluster
 
   ServiceName:
     Type: String
@@ -39,16 +37,16 @@ Parameters:
     Description: Path to perform the healthcheck on each instance.
   HealthCheckIntervalSeconds:
     Type: Number
-    Default: 15
+    Default: 20
     Description: Number of seconds to wait between each health check.
   ImageUrl:
     Type: String
-    Description: The url of a docker image that will handle incoming traffic.
+    Description: url 
     Default: 555305526508.dkr.ecr.us-east-1.amazonaws.com/spring-boot:6
   
-  # HostPort:
-  #   Type: Number
-  #   Default: 0
+  HostPort:
+    Type: Number
+    Default: 0
     
   ContainerPort:
     Type: Number
@@ -73,7 +71,7 @@ Parameters:
     Description: How many copies of the service task to run.
   MinimumHealthyPercentage:
     Type: Number
-    Default: 50
+    Default: 100
   MaximumPercentage:
     Type: Number
     Default: 200
@@ -84,8 +82,6 @@ Resources:
     Type: AWS::ECS::Cluster
     Properties:
       ClusterName: !Ref ClusterName
-
-
 
 
 
@@ -101,12 +97,11 @@ Resources:
       ToPort: 65535
       SourceSecurityGroupId: !Ref 'PublicLoadBalancerSecurityGroup'
 
-
   ECSAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       VPCZoneIdentifier:
-        - Fn::ImportValue: PrivateSubnet1  #private                 
+        - Fn::ImportValue: PrivateSubnet1  #private                      ################################################
         - Fn::ImportValue: PrivateSubnet2
       LaunchConfigurationName: !Ref ContainerInstances
       MinSize: 1
@@ -122,8 +117,9 @@ Resources:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
       ImageId: !Ref 'ECSAMI'
-      SecurityGroups: 
-        - Fn::ImportValue: ECSSecurityGroup                           ##########
+      SecurityGroups:
+        - Fn::ImportValue: ECSSecurityGroup
+     
       InstanceType: !Ref 'InstanceType'
       IamInstanceProfile: !Ref 'EC2InstanceProfile'
       UserData:
@@ -132,6 +128,11 @@ Resources:
           echo ECS_CLUSTER=${ECSCluster} >> /etc/ecs/ecs.config
           yum install -y aws-cfn-bootstrap
           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource ECSAutoScalingGroup --region ${AWS::Region}
+          sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+          sudo systemctl enable amazon-ssm-agent
+          sudo systemctl start amazon-ssm-agent
+
+
   EC2InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -161,7 +162,21 @@ Resources:
               - 'ecs:UpdateService'
             Resource: '*'
 
+  ServiceScalableTarget:
+    Type: "AWS::ApplicationAutoScaling::ScalableTarget"
+    Properties:
+      MaxCapacity:  2
+      MinCapacity:  1
+      ResourceId: !Join
+        - /
+        - - service
+          - !Ref ClusterName
+          - !GetAtt Service.Name
+      RoleARN: !GetAtt AutoscalingRole.Arn
+      ScalableDimension: ecs:service:DesiredCount
+      ServiceNamespace: ecs
 
+ 
   EC2Role:
     Type: AWS::IAM::Role
     Properties:
@@ -191,6 +206,8 @@ Resources:
               - 'ecr:BatchGetImage'
               - 'ecr:GetDownloadUrlForLayer'
             Resource: '*'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM'
 
 
   ECSRole:
@@ -209,7 +226,7 @@ Resources:
           Statement:
           - Effect: Allow
             Action:
-       
+
               - 'ec2:AttachNetworkInterface'
               - 'ec2:CreateNetworkInterface'
               - 'ec2:CreateNetworkInterfacePermission'
@@ -217,8 +234,6 @@ Resources:
               - 'ec2:DeleteNetworkInterfacePermission'
               - 'ec2:Describe*'
               - 'ec2:DetachNetworkInterface'
-
-             
               - 'elasticloadbalancing:DeregisterInstancesFromLoadBalancer'
               - 'elasticloadbalancing:DeregisterTargets'
               - 'elasticloadbalancing:Describe*'
@@ -234,15 +249,17 @@ Resources:
       HealthCheckIntervalSeconds: !Ref 'HealthCheckIntervalSeconds'
       HealthCheckPath: !Ref 'HealthCheckPath'
       HealthCheckProtocol: HTTP
-     # HealthCheckTimeoutSeconds: 
-      HealthyThresholdCount: 2
-     # TargetType: instance
-      Name: !Ref 'ServiceName'
-      Port: !Ref ContainerPort
       Protocol: HTTP
+      Matcher:
+        HttpCode: 200-299
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      #TargetType: instance
+      Name: !Ref 'ServiceName'
+      Port: 80
       UnhealthyThresholdCount: 2
       VpcId: 
-        Fn::ImportValue: VPC
+        Fn::ImportValue: VPC 
 
 
   PublicLoadBalancerSecurityGroup:
@@ -250,7 +267,7 @@ Resources:
     Properties:
       GroupDescription: Access to the public facing load balancer
       VpcId:
-        Fn::ImportValue: VPC
+        Fn::ImportValue: VPC 
       SecurityGroupIngress:
         # Allow access to ALB from anywhere on the internet
         - CidrIp: 0.0.0.0/0
@@ -261,7 +278,7 @@ Resources:
     Properties:
       Scheme: internet-facing
       Subnets:
-        - Fn::ImportValue: PublicSubnet1                                   #public  ###################################################################
+        - Fn::ImportValue: PublicSubnet1                                   #public  ##################################
         - Fn::ImportValue: PublicSubnet2
       SecurityGroups:
         - !Ref PublicLoadBalancerSecurityGroup
@@ -297,18 +314,16 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  # Allow the ECS Tasks to download images from ECR
+
                   - 'ecr:GetAuthorizationToken'
                   - 'ecr:BatchCheckLayerAvailability'
                   - 'ecr:GetDownloadUrlForLayer'
                   - 'ecr:BatchGetImage'
-
-                  # Allow the ECS tasks to upload logs to CloudWatch
+                  - 'ssm:GetParameters'
+                  - 'secretsmanager:GetSecretValue'
                   - 'logs:CreateLogStream'
                   - 'logs:PutLogEvents'
                 Resource: '*'
-      ManagedPolicyArns:
-        - 'arn:aws:iam::aws:policy/AmazonSSMFullAccess'
 
   LogGroup:
     Type: AWS::Logs::LogGroup
@@ -320,8 +335,7 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: !Ref 'ServiceName'
-     # Cpu: 1vCPU
-      #Memory: 400
+
       executionRoleArn: !Ref ECSTaskExecutionRole
      
       ContainerDefinitions:
@@ -335,17 +349,19 @@ Resources:
               
             - Name: DB_NAME
               ValueFrom: !Sub arn:aws:ssm:us-east-1:${AWS::AccountId}:parameter/dbname
+              
 
             - Name: DB_USER
               ValueFrom: !Sub arn:aws:ssm:us-east-1:${AWS::AccountId}:parameter/dbusername
+              
 
             - Name: DB_PASS
               ValueFrom: !Sub arn:aws:ssm:us-east-1:${AWS::AccountId}:parameter/dbpassword
-
+              
+              
           PortMappings:
             - ContainerPort: !Ref ContainerPort
-              # HostPort: !Ref HostPort
-
+              HostPort: !Ref HostPort
           LogConfiguration:
             LogDriver: 'awslogs'
             Options:
@@ -386,4 +402,8 @@ Outputs:
       Name: !Join [ ':', [ !Ref 'AWS::StackName', 'AutoscalingRole' ] ]
 
 
-  
+  # ContainerSecurityGroup:
+  #   Description: A security group used to allow containers to receive traffic
+  #   Value: !Ref 'ContainerSecurityGroup'
+  #   Export:
+  #     Name: !Ref ContainerSecurityGroup
