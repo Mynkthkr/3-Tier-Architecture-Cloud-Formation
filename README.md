@@ -99,6 +99,7 @@ From this , got the Endpoint of RDS and store that in Export
 ```
 ### Now Run the final stack for deploying the ECS Infra using following CLI command 
 
+#### Enter the Image URI in <image>
 
 
 ```
