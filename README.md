@@ -36,7 +36,7 @@ Use the AWS CLI:
 $ aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 4xxxxxxxxxx5.dkr.ecr.us-east-1.amazonaws.com
 *Retrieve an authentication token and authenticate your Docker client to your registry.
 
-<b>Note:</b> If you receive an error using the AWS CLI, make sure that you have the latest version of the AWS CLI and Docker installed.
+Note: If you receive an error using the AWS CLI, make sure that you have the latest version of the AWS CLI and Docker installed.
 
 $ docker build -t spring-boot-app . 
 *Build your Docker image using the following command. You can skip this step if your image is already built:
