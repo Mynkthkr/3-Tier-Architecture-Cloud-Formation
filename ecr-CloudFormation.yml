@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description:  CloudFormation template 
+Parameters:    
+  # lifecyclePolicyText:
+  #   Type: String
+  repositoryName:
+    Type: String
+    Default: helloworld
+  # registryId:
+  #   Type: String
+Resources:
+  MyRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      #LifecyclePolicy:
+        #LifecyclePolicyText: !Ref lifecyclePolicyText
+        #RegistryId: !Ref registryId
+      RepositoryName: !Ref repositoryName
+Outputs:    
+  Arn:
+    Value: !GetAtt MyRepository.Arn
+
+  ECRUri:
+    Value: !GetAtt MyRepository.RepositoryUri
+    Export:
+      Name: ECRUri
