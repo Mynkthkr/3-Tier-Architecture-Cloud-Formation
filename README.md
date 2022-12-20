@@ -19,7 +19,11 @@ Step2:
 
 Create AWS ECR Repositories
 
-Search <b>Amazon ECR</b> > Create repositories 
+Search <b>Amazon ECR</b> > Create repositories or use CloudFormation Template [ECR-Template](https://github.com/Mynkthkr/java-springboot/blob/main/ecr-CloudFormation.yml)
+
+```
+aws cloudformation create-stack --stack-name ecr --template-body file://ecr-CloudFormation.yml --region=us-east-1
+```
 
 Push image on AWS ECR
 
@@ -28,21 +32,21 @@ Follow   ![image](https://user-images.githubusercontent.com/54767390/205375295-1
 Retrieve an authentication token and authenticate your Docker client to your registry.
 
 Use the AWS CLI:
-```
+
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 4xxxxxxxxxx5.dkr.ecr.us-east-1.amazonaws.com
-```
+
 <b> Note: If you receive an error using the AWS CLI, make sure that you have the latest version of the AWS CLI and Docker installed. </b>
 
 Build your Docker image using the following command. You can skip this step if your image is already built:
-```
+
 docker build -t <name> . 
-```
+
 After the build completes, tag your image so you can push the image to this repository:
-```
+
 docker tag spring:latest 4xxxxxxxxx5.dkr.ecr.us-east-1.amazonaws.com/spring:latest
-```
+
 Run the following command to push this image to your newly created AWS repository:
-```
+
 docker push 4xxxxxxxx5.dkr.ecr.us-east-1.amazonaws.com/<name>:latest
 ```
 
