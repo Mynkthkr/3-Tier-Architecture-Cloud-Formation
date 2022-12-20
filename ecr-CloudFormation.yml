@@ -5,7 +5,7 @@ Parameters:
   #   Type: String
   repositoryName:
     Type: String
-    Default: helloworld
+    Default: spring-boot-app
   # registryId:
   #   Type: String
 Resources:
