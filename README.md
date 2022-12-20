@@ -137,13 +137,13 @@ pipeline {
         }
          stage('build image') {
           steps{
-              sh'docker build -t 4xxxxxxxxxx5.dkr.ecr.us-east-1.amazonaws.com/spring:${BUILD_NUMBER} . '
+              sh'docker build -t 4xxxxxxxxxx5.dkr.ecr.us-east-1.amazonaws.com/spring-boot-app:${BUILD_NUMBER} . '
                 }
         }
         stage('push image') {
           steps{
              sh'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 45xxxxxx5.dkr.ecr.us-east-1.amazonaws.com'
-             sh'docker push 45xxxxxx55.dkr.ecr.us-east-1.amazonaws.com/spring:${BUILD_NUMBER}'
+             sh'docker push 45xxxxxx55.dkr.ecr.us-east-1.amazonaws.com/spring-boot-app:${BUILD_NUMBER}'
                 }
         }  
         stage('validation') {
@@ -154,7 +154,7 @@ pipeline {
         }
         stage('submit stack') {
           steps{               
-              sh'aws cloudformation create-stack --stack-name ecs --template-body file://ecs-CloudFormation.yml --parameters ParameterKey=ContainerPort,ParameterValue=8090 ParameterKey=Image1,ParameterValue=${image}:${BUILD_NUMBER} --capabilities CAPABILITY_NAMED_IAM'
+              sh'aws cloudformation create-stack --stack-name ecs --template-body file://ecs-CloudFormation.yml --parameters ParameterKey=ContainerPort,ParameterValue=8090 ParameterKey=ImageUrl,ParameterValue=${image}:${BUILD_NUMBER} --capabilities CAPABILITY_NAMED_IAM'
             }
         }                
     }
