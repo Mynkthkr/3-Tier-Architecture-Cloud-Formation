@@ -33,18 +33,18 @@ Follow   ![image](https://user-images.githubusercontent.com/54767390/205375295-1
 
 Use the AWS CLI:
 ```
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 4xxxxxxxxxx5.dkr.ecr.us-east-1.amazonaws.com
+$ aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 4xxxxxxxxxx5.dkr.ecr.us-east-1.amazonaws.com
 *Retrieve an authentication token and authenticate your Docker client to your registry.
 
-<b> Note: If you receive an error using the AWS CLI, make sure that you have the latest version of the AWS CLI and Docker installed. </b>
+<b>Note: If you receive an error using the AWS CLI, make sure that you have the latest version of the AWS CLI and Docker installed.</b>
 
-docker build -t spring-boot-app . 
+$ docker build -t spring-boot-app . 
 *Build your Docker image using the following command. You can skip this step if your image is already built:
 
-docker tag spring:latest 4xxxxxxxxx5.dkr.ecr.us-east-1.amazonaws.com/spring-boot-app:latest
+d$ ocker tag spring:latest 4xxxxxxxxx5.dkr.ecr.us-east-1.amazonaws.com/spring-boot-app:latest
 *After the build completes, tag your image if you have any other image name so you can push the image to this repository:
 
-docker push 4xxxxxxxx5.dkr.ecr.us-east-1.amazonaws.com/spring-boot-app:latest
+$ docker push 4xxxxxxxx5.dkr.ecr.us-east-1.amazonaws.com/spring-boot-app:latest
 *Run the following command to push this image to your newly created AWS repository.
 ```
 
