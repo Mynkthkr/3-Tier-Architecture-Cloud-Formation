@@ -1,3 +1,2 @@
-main:
-    #dockerFilePath: ../Dockerfile
-    appName: testing
+ dockerFilePath: ../Dockerfile
+ appName: testing
