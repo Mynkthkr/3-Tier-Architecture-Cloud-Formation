@@ -1,3 +1,3 @@
 main:
-    dockerFilePath: ../Dockerfile
+    #dockerFilePath: ../Dockerfile
     appName: testing
