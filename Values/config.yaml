@@ -1,2 +1,2 @@
- dockerFilePath: ../Dockerfile
+ dockerFilePath: docker/Dockerfile
  appName: testing
