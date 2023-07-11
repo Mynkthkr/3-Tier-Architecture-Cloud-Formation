@@ -216,27 +216,27 @@ Outputs:
     Value: !Ref ECSSecurityGroup
     Export: 
       Name: ECSSecurityGroup
-# Outputs:
-#   DBName:
-#     Description: Database-password
-#     Value: !Ref DBName
-#     Export:
-#       Name: dbname
+Outputs:
+  DBName:
+    Description: Database-password
+    Value: !Ref DBName
+    Export:
+      Name: dbname
 
-#   DBUsername:
-#     Description: Database-password
-#     Value: !Ref DBUsername
-#     Export:
-#       Name: dbusername
+  DBUsername:
+    Description: Database-password
+    Value: !Ref DBUsername
+    Export:
+      Name: dbusername
 
-#   DBPassword:
-#     Description: Database-password
-#     Value: !Ref DBPassword
-#     Export:
-#       Name: dbpassword
+  DBPassword:
+    Description: Database-password
+    Value: !Ref DBPassword
+    Export:
+      Name: dbpassword
 
-  # DBEndpoint:
-  #   Description: The connection endpoint for the database.
-  #   Value: !GetAtt  DBinstance.Endpoint.Address
-  #   Export:
-  #     Name: DBEndPoint 
+  DBEndpoint:
+    Description: The connection endpoint for the database.
+    Value: !GetAtt  DBinstance.Endpoint.Address
+    Export:
+      Name: DBEndPoint 
