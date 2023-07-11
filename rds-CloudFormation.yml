@@ -4,20 +4,20 @@ Parameters:
   RandomStringLength:
     Type: Number
     Default: 12
-  # DBName:
-  #   Description: RDS database name
-  #   Type: AWS::SSM::Parameter::Value<String>
-  #   Default: dbname
+  DBName:
+    Description: RDS database name
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: dbname
 
-  # DBUsername:
-  #   Description: RDS database user name
-  #   Type: AWS::SSM::Parameter::Value<String>
-  #   Default: dbusername
+  DBUsername:
+    Description: RDS database user name
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: dbusername
 
-  # DBPassword:
-  #   Description: RDS database Password
-  #   Type: AWS::SSM::Parameter::Value<String>
-  #   Default: dbpassword
+  DBPassword:
+    Description: RDS database Password
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: dbpassword
 
 
 
