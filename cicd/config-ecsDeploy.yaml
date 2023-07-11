@@ -1,2 +1,2 @@
  dockerFilePath: docker/Dockerfile
- appName: testing
+ appName: ecs
