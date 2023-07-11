@@ -210,12 +210,7 @@ Resources:
       length: !Ref  RandomStringLength 
     
 
-Outputs:
-  ECSSecurityGroup:
-    Description: "ecs group"
-    Value: !Ref ECSSecurityGroup
-    Export: 
-      Name: ECSSecurityGroup
+
 Outputs:
   DBName:
     Description: Database-password
