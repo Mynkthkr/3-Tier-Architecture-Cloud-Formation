@@ -212,7 +212,7 @@ Resources:
 
 
 Outputs:
-  DBName:
+  DBNames:
     Description: Database-password
     Value: !Ref DBName
     Export:
