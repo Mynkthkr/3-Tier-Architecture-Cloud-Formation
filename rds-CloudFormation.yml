@@ -194,14 +194,14 @@ Resources:
       Tier: Standard
       Description: SSM Parameter 
 
-  EndpointParameter:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Name: dbendpoint
-      Type: String
-      Value: !GetAtt  DBinstance.Endpoint.Address
-      Tier: Standard
-      Description: SSM Parameter 
+  # EndpointParameter:
+  #   Type: AWS::SSM::Parameter
+  #   Properties:
+  #     Name: dbendpoint
+  #     Type: String
+  #     Value: !GetAtt  DBinstance.Endpoint.Address
+  #     Tier: Standard
+  #     Description: SSM Parameter 
 
   CallLambda:
     Type: "Custom::CallLambda"
