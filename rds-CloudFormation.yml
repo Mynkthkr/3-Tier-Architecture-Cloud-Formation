@@ -144,8 +144,8 @@ Resources:
       AllocatedStorage: 5
       DBInstanceClass: db.t3.small
       Engine: MySQL
-      MasterUsername: !GetAtt CallLambda.UpperRandomString
-      MasterUserPassword: !GetAtt CallLambda.RandomString  
+      MasterUsername: admin #!GetAtt CallLambda.UpperRandomString
+      MasterUserPassword: admin1234 #!GetAtt CallLambda.RandomString  
       DBName: db
     DeletionPolicy: Snapshot
 
@@ -220,13 +220,13 @@ Outputs:
 
   DBUsername:
     Description: Database-password
-    Value: !Ref MasterUsername
+    Value: admin #!Ref MasterUsername
     Export:
       Name: dbusername
 
   DBPassword:
     Description: Database-password
-    Value: !Ref MasterUserPassword
+    Value: admin1234 #!Ref MasterUserPassword
     Export:
       Name: dbpassword
 
