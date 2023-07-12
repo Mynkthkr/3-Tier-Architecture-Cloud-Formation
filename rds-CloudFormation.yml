@@ -220,13 +220,13 @@ Outputs:
 
   DBUsername:
     Description: Database-password
-    Value: !Ref DBUsername
+    Value: !Ref MasterUsername
     Export:
       Name: dbusername
 
   DBPassword:
     Description: Database-password
-    Value: !Ref DBPassword
+    Value: !Ref MasterUserPassword
     Export:
       Name: dbpassword
 
